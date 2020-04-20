@@ -1,0 +1,54 @@
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:	export GIN_MODE=release
+ - using code:	gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] POST   /customer/login           --> github.com/e421083458/gin_scaffold/api/customer.(*Controller).Login-fm (4 handlers)
+
+
+[31m2020/04/05 02:49:20 [Recovery] 2020/04/05 - 02:49:20 panic recovered:
+POST /customer/login HTTP/1.1
+Host: 127.0.0.1:8880
+Accept: */*
+Accept-Encoding: gzip, deflate, br
+Connection: keep-alive
+Content-Length: 287
+Content-Type: multipart/form-data; boundary=--------------------------244234155703816302294385
+Postman-Token: f12c549f-36f2-4804-853f-e00400b0ebf8
+User-Agent: PostmanRuntime/7.24.0
+
+
+Key "github.com/gin-gonic/contrib/sessions" does not exist
+/Users/sky/go/pkg/mod/github.com/gin-gonic/gin@v1.5.0/context.go:240 (0x16623a2)
+	(*Context).MustGet: panic("Key \"" + key + "\" does not exist")
+/Users/sky/go/pkg/mod/github.com/gin-gonic/contrib@v0.0.0-20190526021735-7fb7810ed2a0/sessions/sessions.go:146 (0x166213f)
+	Default: return c.MustGet(DefaultKey).(Session)
+/Users/sky/Documents/Code/Go/wechat-hacker/api/customer/controller.go:24 (0x16620ef)
+	(*Controller).Login: session := sessions.Default(ctx)
+/Users/sky/go/pkg/mod/github.com/gin-gonic/gin@v1.5.0/context.go:147 (0x150cf0a)
+	(*Context).Next: c.handlers[c.index](c)
+/Users/sky/go/pkg/mod/github.com/gin-contrib/sessions@v0.0.3/sessions.go:52 (0x16631d6)
+	Sessions.func1: c.Next()
+/Users/sky/go/pkg/mod/github.com/gin-gonic/gin@v1.5.0/context.go:147 (0x150cf0a)
+	(*Context).Next: c.handlers[c.index](c)
+/Users/sky/go/pkg/mod/github.com/gin-gonic/gin@v1.5.0/recovery.go:83 (0x15209a3)
+	RecoveryWithWriter.func1: c.Next()
+/Users/sky/go/pkg/mod/github.com/gin-gonic/gin@v1.5.0/context.go:147 (0x150cf0a)
+	(*Context).Next: c.handlers[c.index](c)
+/Users/sky/go/pkg/mod/github.com/gin-gonic/gin@v1.5.0/logger.go:241 (0x151fad0)
+	LoggerWithConfig.func1: c.Next()
+/Users/sky/go/pkg/mod/github.com/gin-gonic/gin@v1.5.0/context.go:147 (0x150cf0a)
+	(*Context).Next: c.handlers[c.index](c)
+/Users/sky/go/pkg/mod/github.com/gin-gonic/gin@v1.5.0/gin.go:403 (0x1516f39)
+	(*Engine).handleHTTPRequest: c.Next()
+/Users/sky/go/pkg/mod/github.com/gin-gonic/gin@v1.5.0/gin.go:364 (0x151662d)
+	(*Engine).ServeHTTP: engine.handleHTTPRequest(c)
+/usr/local/Cellar/go/1.13.1/src/net/http/server.go:2802 (0x12ddc83)
+	serverHandler.ServeHTTP: handler.ServeHTTP(rw, req)
+/usr/local/Cellar/go/1.13.1/src/net/http/server.go:1890 (0x12d9524)
+	(*conn).serve: serverHandler{c.server}.ServeHTTP(w, w.req)
+/usr/local/Cellar/go/1.13.1/src/runtime/asm_amd64.s:1357 (0x105c880)
+	goexit: BYTE	$0x90	// NOP
+[0m
+[GIN] 2020/04/05 - 02:49:20 | 500 |    3.132348ms |       127.0.0.1 | POST     /customer/login
