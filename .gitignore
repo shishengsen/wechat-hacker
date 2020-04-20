@@ -1,2 +1,13 @@
-./log
+log/*
 ./gin.log
+.DS_Store    
+.buildpath    
+.hgignore.swp    
+.project    
+.orig    
+.swp    
+*.swp    
+*.swo    
+.idea/    
+.settings/    
+.vscode/  
