@@ -8,6 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/**
+	客户端设备控制器
+ */
 type Controller struct {
 
 }
@@ -28,4 +31,15 @@ func(c *Controller) Push(ctx *gin.Context) {
 	middleware.ResponseSuccess(ctx, msg)
 	return
 }
+
+// 同步数据
+func (c *Controller) SyncData(ctx *gin.Context){
+	return
+}
+
+// 发送消息
+func (c *Controller) MsgSend(ctx *gin.Context){
+	return
+}
+
 

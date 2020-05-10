@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/e421083458/gin_scaffold/cmd"
+	"github.com/e421083458/gin_scaffold/proto"
 	"github.com/e421083458/gin_scaffold/public"
 	"github.com/e421083458/gin_scaffold/websocket/client"
 	"github.com/e421083458/golang_common/lib"
@@ -123,7 +124,8 @@ closed:
 // 存储注册客户端数据至redis
 func runCmd(c *Client, msg *Message) {
 	var msgObj wsClient.ClientMessage
-	err := json.Unmarshal(msg.Data, &msgObj)
+	var cmdObj proto_pb.Cmd
+	err := json.Unmarshal(msg.Data, &cmdObj)
 	if err != nil {
 		return
 	}
