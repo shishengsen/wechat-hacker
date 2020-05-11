@@ -1,5 +1,0 @@
-syntax = "proto3";
-package proto_pb;
-
-option java_package = "com.magic.kernel.okhttp.socket.proto";
-option java_outer_classname = "WxCmdPb";
