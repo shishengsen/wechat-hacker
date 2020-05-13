@@ -7,18 +7,16 @@ import (
 	"reflect"
 )
 
-type Commands map[int]interface{}
+type Commands map[string]interface{}
 
 var AllCommand Commands
 
 func LoadCommands() {
 	AllCommand = Commands{}
-	mergeCommands(AllCommand, StateCmd)
-	mergeCommands(AllCommand, ConversationCmd)
+	mergeCommands(AllCommand, ContactCmd)
+	mergeCommands(AllCommand, GroupCmd)
+	mergeCommands(AllCommand, InfoCmd)
 	mergeCommands(AllCommand, MsgCmd)
-	mergeCommands(AllCommand, SetCmd)
-	mergeCommands(AllCommand, UserCmd)
-	mergeCommands(AllCommand, UserLabelCmd)
 }
 
 func mergeCommands(cmdMap1 Commands, cmdMap2 Commands) {
@@ -31,9 +29,9 @@ func mergeCommands(cmdMap1 Commands, cmdMap2 Commands) {
 
 func CallCmd(msgData *wsClient.ClientMessage) error {
 	fmt.Printf("ready to run cmd: %v\n", msgData)
-	cmd, ok := AllCommand[msgData.Cmd]
+	cmd, ok := AllCommand[msgData.Cname]
 	if !ok {
-		return errors.New("invalid command code")
+		return errors.New("invalid command name:" + msgData.Cname)
 	}
 	fv := reflect.ValueOf(cmd)
 	args := []reflect.Value{reflect.ValueOf(msgData)}

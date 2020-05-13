@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"encoding/json"
+	"github.com/e421083458/gin_scaffold/public"
 	"github.com/gin-gonic/gin"
-	"github.com/e421083458/golang_common/lib"
 )
 
 type ResponseCode int
@@ -29,13 +29,14 @@ type Response struct {
 }
 
 func ResponseError(c *gin.Context, code ResponseCode, err error) {
-	trace, _ := c.Get("trace")
-	traceContext, _ := trace.(*lib.TraceContext)
+	//trace, _ := c.Get("trace")
+	//traceContext, _ := trace.(*lib.TraceContext)
 	traceId := ""
+	traceContext := public.ParserWeContext(c)
 	if traceContext != nil {
-		traceId = traceContext.TraceId
+		traceId = traceContext.GetTraceId()
 	}
-	c.Header("Trace-Id", traceId)
+	c.Header("X-Trace-Id", traceId)
 	resp := &Response{ErrorCode: code, ErrorMsg: err.Error(), Data: "", TraceId: traceId}
 	c.JSON(200, resp)
 	response, _ := json.Marshal(resp)
@@ -44,7 +45,12 @@ func ResponseError(c *gin.Context, code ResponseCode, err error) {
 }
 
 func ResponseSuccess(c *gin.Context, data interface{}) {
-	resp := &Response{ErrorCode: SuccessCode, ErrorMsg: "", Data: data}
+	traceId := ""
+	traceContext := public.ParserWeContext(c)
+	if traceContext != nil {
+		traceId = traceContext.GetTraceId()
+	}
+	resp := &Response{ErrorCode: SuccessCode, ErrorMsg: "", Data: data, TraceId: traceId}
 	c.JSON(200, resp)
 	response, _ := json.Marshal(resp)
 	c.Set("response", string(response))

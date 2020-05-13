@@ -1,11 +1,14 @@
 package customer
 
 import (
+	"encoding/json"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/e421083458/gin_scaffold/dao"
 	"github.com/e421083458/golang_common/lib"
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
+	"reflect"
 	"time"
 )
 
@@ -40,4 +43,15 @@ func (s *Service) MakeToken(ctx *gin.Context) (tokenStr string, err error) {
 		return "", err
 	}
 	return tokenString, nil
+}
+
+
+func (c *Controller) getUserInfoBySess(ctx *gin.Context) (res *LoginResp, err error){
+	session := sessions.Default(ctx)
+	sessData := session.Get("user")
+	resp := &LoginResp{}
+	if err := json.Unmarshal([]byte(reflect.ValueOf(sessData).Interface().(string)), resp); err != nil {
+		return nil, err
+	}
+	return resp,nil
 }

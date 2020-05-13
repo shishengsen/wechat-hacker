@@ -14,6 +14,5 @@ type LoginResp struct {
 	Phone string `json:"phone"`
 	ApiToken string `json:"apiToken"`
 	Role public.RoleType `json:"role"`
-	Sess string `json:"sess"`
 	ExpireTime int64 `json:"tokenExpTime"`
 }

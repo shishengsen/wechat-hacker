@@ -18,7 +18,7 @@ func RequestInLog(c *gin.Context) {
 	if spanId := c.Request.Header.Get("com-header-spanid"); spanId != "" {
 		traceContext.SpanId = spanId
 	}
-
+	traceContext.TraceId = public.ParserWeContext(c).GetTraceId()
 	c.Set("startExecTime", time.Now())
 	c.Set("trace", traceContext)
 

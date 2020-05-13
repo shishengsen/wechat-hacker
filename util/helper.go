@@ -1,6 +1,8 @@
 package util
 
 import (
+	"bytes"
+	"encoding/gob"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 	"github.com/e421083458/gin_scaffold/public"
@@ -12,12 +14,12 @@ import (
 )
 
 type Token struct {
-	Token string `json:"token"`
-	ExpireTime int64 `json:"expireTime"`
+	Token      string `json:"token"`
+	ExpireTime int64  `json:"expireTime"`
 }
 
 // 生成token
-func MakeToken(role public.RoleType) (tokenRes Token, err error) {
+func MakeToken(role public.RoleType) (tokenRes *Token, err error) {
 	// 获取token
 	token := jwt.New(jwt.SigningMethodHS256)
 	claims := make(jwt.MapClaims)
@@ -27,7 +29,7 @@ func MakeToken(role public.RoleType) (tokenRes Token, err error) {
 	claims["iat"] = time.Now().Unix()
 	token.Claims = claims
 	tokenString, err := token.SignedString([]byte(getSecretKey(role)))
-	tokenRs := Token{}
+	tokenRs := &Token{}
 	if err != nil {
 		return tokenRs, err
 	}
@@ -73,9 +75,26 @@ func getSecretKey(st public.RoleType) (secret string) {
 	return secretKey
 }
 
-func CallMethod(method interface{}, a interface{}){
+func CallMethod(method interface{}, a interface{}) {
 	// here method is a interface which is a type of func
 	fv := reflect.ValueOf(method)
 	args := []reflect.Value{reflect.ValueOf(a)}
 	fv.Call(args)
+}
+
+
+func EncodeCmd(data interface{}) ([]byte, error) {
+	buf := bytes.NewBuffer(nil)
+	enc := gob.NewEncoder(buf)
+	err := enc.Encode(data)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+func DecodeCmd(data []byte, to interface{}) error {
+	buf := bytes.NewBuffer(data)
+	dec := gob.NewDecoder(buf)
+	return dec.Decode(to)
 }

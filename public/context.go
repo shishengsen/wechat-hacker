@@ -1,7 +1,11 @@
 package public
 
 import (
+	"crypto/md5"
+	"encoding/hex"
 	"github.com/gin-gonic/gin"
+	"math/rand"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -39,6 +43,24 @@ type User struct {
 	Phone string `json:"phone"`
 	// 角色
 	Role RoleType `json:"role"`
+}
+
+// 创建自定义上下文
+func NewWeContext() WeContext {
+	return WeContext{
+		traceId: TraceId(),
+	}
+}
+
+func TraceId() string {
+	h := md5.New()
+	rand.Seed(time.Now().UnixNano())
+	h.Write([]byte(strconv.FormatInt(rand.Int63(), 10)))
+	h.Write([]byte("-"))
+	h.Write([]byte(strconv.FormatInt(time.Now().UnixNano(), 10)))
+	h.Write([]byte("-"))
+	h.Write([]byte(strconv.FormatInt(int64(rand.Int31()), 10)))
+	return hex.EncodeToString(h.Sum([]byte("wehacker")))
 }
 
 func (wc *WeContext) GetTraceId() string {
@@ -181,3 +203,4 @@ func GetErrMsg(ctx *gin.Context) string {
 func SetErrMsg(ctx *gin.Context, msg string) {
 	ctx.Set("_err", msg)
 }
+

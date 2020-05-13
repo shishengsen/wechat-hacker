@@ -1,12 +1,13 @@
 package websocket
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"github.com/e421083458/gin_scaffold/cmd"
+	"github.com/e421083458/gin_scaffold/dao"
 	"github.com/e421083458/gin_scaffold/proto"
 	"github.com/e421083458/gin_scaffold/public"
+	"github.com/e421083458/gin_scaffold/util"
 	"github.com/e421083458/gin_scaffold/websocket/client"
 	"github.com/e421083458/golang_common/lib"
 	"github.com/garyburd/redigo/redis"
@@ -123,19 +124,24 @@ closed:
 
 // 存储注册客户端数据至redis
 func runCmd(c *Client, msg *Message) {
-	var msgObj wsClient.ClientMessage
-	var cmdObj proto_pb.Cmd
-	err := json.Unmarshal(msg.Data, &cmdObj)
-	if err != nil {
-		return
+	cmdObj := &proto.Cmd{}
+	if err := util.DecodeCmd(msg.Data, cmdObj); err != nil{
+		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
+	execCmd := &wsClient.ClientMessage{
+		Cmd:cmdObj,
+		Wxid:uint64(cmdObj.Wid),
+		ClientConnId:c.Id,
+		Cname:cmdObj.Cname,
+	}
+
 	// 若为确认连接则存储至redis
-	msgObj.ClientConnId = c.Id
-	c.wxId = msgObj.Wxid
-	err = cmd.CallCmd(&msgObj)
+	c.wxId = uint64(cmdObj.Wid)
+	err := cmd.CallCmd(execCmd)
 	if err != nil {
 		log.Printf(" [redis] run command connect fail: %v", err)
 	}
+
 }
 
 // 从redis中移除注册客户端
@@ -143,7 +149,10 @@ func redisClose(c *Client) {
 	msgObj := &wsClient.ClientMessage{
 		ClientConnId: c.Id,
 		Wxid:         c.wxId,
-		Cmd:          10002,
+		Cmd:          &proto.Cmd{
+			Cname:"CmdWw322",
+		},
+		Cname:"CmdWw322",
 	}
 	if err := cmd.CallCmd(msgObj); err != nil {
 		log.Printf(" [redis] run command disconnect fail: %v", err)
@@ -174,7 +183,7 @@ func (c *Client) procLoop() {
 	go func() {
 		for {
 			time.Sleep(2 * time.Second)
-			if err := c.wsWrite(websocket.TextMessage, []byte("heartbeat from server")); err != nil {
+			if err := c.wsWrite(websocket.TextMessage, []byte("pong")); err != nil {
 				log.Printf(" [websocket] heartbeat fail")
 				c.wsClose()
 				break
@@ -260,9 +269,10 @@ func (c *Client) wsClose() {
 
 func Run() {
 	go Manager.start()
-	http.HandleFunc("/ws", wsHandler)
+	http.HandleFunc("/wsClient", wsClientHandler)
+	http.HandleFunc("/wsCustomer", wsCustomerHandler)
 	log.Printf(" [websocket] WebsocketServerRun:%s\n", lib.GetStringConf("base.websocket.addr"))
-	err := http.ListenAndServe(lib.GetStringConf("base.websocket.addr"), nil);
+	err := http.ListenAndServe(lib.GetStringConf("base.websocket.addr"), nil)
 	if err != nil {
 		log.Printf(" [websocket error] WebsocketServerRun: error %s\n", err.Error())
 	}
@@ -298,24 +308,24 @@ func BatchMsg(msg string) {
 	}
 }
 
-func wsHandler(resp http.ResponseWriter, req *http.Request) {
+func wsClientHandler(resp http.ResponseWriter, req *http.Request) {
 	respHeader := http.Header{}
-	////token 校验
-	//token := req.Header.Get("Sec-WebSocket-Protocol")
-	//if len(token) == 0 {
-	//	log.Printf(" [websocket] handle error with no token")
-	//	return
-	//}
-	//req.Header.Add("Authorization", "Bearer "+token)
-	//log.Printf(" [websocket] token:%s", token)
-	//// 应答客户端告知升级连接为websocket
-	//respHeader.Add("Sec-WebSocket-Protocol", token)
-	//req.Header.Set("Authorization", "Bearer "+token)
-	//verifyRs := util.ValidateWsToken(req, public.RoleClient)
-	//if !verifyRs {
-	//	log.Printf(" [websocket] shake hands error: invalid token %s", token)
-	//	return
-	//}
+	//token 校验
+	token := req.Header.Get("Sec-WebSocket-Protocol")
+	if len(token) == 0 {
+		log.Printf(" [websocket] handle error with no token")
+		return
+	}
+	req.Header.Add("Authorization", "Bearer "+token)
+	log.Printf(" [websocket] token:%s", token)
+	// 应答客户端告知升级连接为websocket
+	respHeader.Add("Sec-WebSocket-Protocol", token)
+	req.Header.Set("Authorization", "Bearer "+token)
+	verifyRs := util.ValidateWsToken(req, public.RoleClient)
+	if !verifyRs {
+		log.Printf(" [websocket] shake hands error: invalid token %s", token)
+		return
+	}
 	socket, err := wsUpgrader.Upgrade(resp, req, respHeader)
 	if err != nil {
 		return
@@ -324,6 +334,54 @@ func wsHandler(resp http.ResponseWriter, req *http.Request) {
 	c := &Client{
 		Id:        clientId,
 		wxId:      0,
+		socket:    socket,
+		inChan:    make(chan *Message, 1000),
+		outChan:   make(chan *Message, 1000),
+		closeChan: make(chan byte),
+		isClosed:  false,
+	}
+	Manager.register <- c
+
+	// 处理器
+	go c.procLoop()
+	// 读协程
+	go c.wsReadLoop()
+	// 写协程
+	go c.wsWriteLoop()
+}
+
+func wsCustomerHandler(resp http.ResponseWriter, req *http.Request) {
+	respHeader := http.Header{}
+	//token 校验
+	token := req.Header.Get("Sec-WebSocket-Protocol")
+	if len(token) == 0 {
+		log.Printf(" [websocket] handle error with no token")
+		return
+	}
+	req.Header.Add("Authorization", "Bearer "+token)
+	log.Printf(" [websocket] token:%s", token)
+	// 应答客户端告知升级连接为websocket
+	respHeader.Add("Sec-WebSocket-Protocol", token)
+	req.Header.Set("Authorization", "Bearer "+token)
+	verifyRs := util.ValidateWsToken(req, public.RoleCustomer)
+	if !verifyRs {
+		log.Printf(" [websocket] shake hands error: invalid token %s", token)
+		return
+	}
+	// 根据token从DB查出客户ID并将wxid设置为客户ID
+	var userDao = &dao.User{}
+	user, err := userDao.FindByToken(nil, token); if err != nil {
+		log.Printf(" [websocket] customer not found:  %s", token)
+		return
+	}
+	socket, err := wsUpgrader.Upgrade(resp, req, respHeader)
+	if err != nil {
+		return
+	}
+	clientId := uuId.NewV4().String()
+	c := &Client{
+		Id:        clientId,
+		wxId:      uint64(user.CustomerId),
 		socket:    socket,
 		inChan:    make(chan *Message, 1000),
 		outChan:   make(chan *Message, 1000),

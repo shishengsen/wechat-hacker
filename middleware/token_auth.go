@@ -12,7 +12,7 @@ func TokenAuthMiddleWare(role public.RoleType) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		isValid := util.ValidateToken(c, role)
 		if !isValid {
-			ResponseError(c, InternalErrorCode, errors.New(fmt.Sprintf("token is invalid: %v", c.GetHeader("Authroization"))))
+			ResponseError(c, InternalErrorCode, errors.New(fmt.Sprintf("token is invalid: %v", c.GetHeader("Authorization"))))
 			c.Abort()
 			return
 		}

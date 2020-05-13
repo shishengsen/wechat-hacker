@@ -16,9 +16,8 @@ type User struct {
 	CustomerId int    `json:"customerId" orm:"column(customer_id);"`
 	CompanyIds string `json:"companyIds" orm:"column(company_ids);"`
 	ApiToken   string `json:"apiToken" orm:"column(api_token);"`
-	UpdateAt   time.Time `json:"updated_at" orm:"column(update_at);type(datetime)" description:"更新时间"`
-	CreateAt   time.Time `json:"created_at" orm:"column(create_at);type(datetime)" description:"创建时间"`
-	DeletedAt  time.Time `json:"deleted_at" orm:"column(deleted_at);type(datetime)" description:"删除时间"`
+	UpdatedAt   time.Time `json:"updated_at" orm:"column(updated_at);type(datetime)" description:"更新时间"`
+	CreatedAt   time.Time `json:"created_at" orm:"column(created_at);type(datetime)" description:"创建时间"`
 }
 
 
@@ -38,6 +37,15 @@ func (f *User) Del(c *gin.Context, idSlice []string) error {
 func (f *User) FindByPhone(c *gin.Context, phone string) (*User, error) {
 	var user User
 	err := public.GormPool.SetCtx(public.GetGinTraceContext(c)).Where("phone = ?", phone).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func (f *User) FindByToken(c *gin.Context, token string) (*User, error) {
+	var user User
+	err := public.GormPool.SetCtx(public.GetGinTraceContext(c)).Where("api_token = ?", token).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
