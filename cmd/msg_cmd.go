@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/e421083458/gin_scaffold/proto"
-	"github.com/e421083458/gin_scaffold/util"
 	"github.com/e421083458/gin_scaffold/websocket/client"
+	proto2 "github.com/gogo/protobuf/proto"
 	"log"
 )
 
@@ -23,7 +23,7 @@ var MsgCmd = Commands{
 // 新消息同步
 func contactMsgSync(msg *wsClient.ClientMessage) {
 	data := &proto.CmdWw361{}
-	if err := util.DecodeCmd(msg.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(msg.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -32,7 +32,7 @@ func contactMsgSync(msg *wsClient.ClientMessage) {
 // 系统消息同步
 func systemMsgSync(msg *wsClient.ClientMessage) {
 	data := &proto.CmdWw362{}
-	if err := util.DecodeCmd(msg.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(msg.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -41,7 +41,7 @@ func systemMsgSync(msg *wsClient.ClientMessage) {
 // 发送文本消息
 func sendTextMsg(msg *wsClient.ClientMessage) {
 	data := &proto.CmdWw363{}
-	if err := util.DecodeCmd(msg.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(msg.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -50,7 +50,7 @@ func sendTextMsg(msg *wsClient.ClientMessage) {
 // 发送图片消息
 func sendImageMsg(msg *wsClient.ClientMessage) {
 	data := &proto.CmdWw364{}
-	if err := util.DecodeCmd(msg.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(msg.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -59,7 +59,7 @@ func sendImageMsg(msg *wsClient.ClientMessage) {
 // 发送语音消息(不能超过60s)
 func sendVoiceMsg(msg *wsClient.ClientMessage) {
 	data := &proto.CmdWw365{}
-	if err := util.DecodeCmd(msg.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(msg.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -68,7 +68,7 @@ func sendVoiceMsg(msg *wsClient.ClientMessage) {
 // 发送视频消息
 func sendVideoMsg(msg *wsClient.ClientMessage) {
 	data := &proto.CmdWw366{}
-	if err := util.DecodeCmd(msg.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(msg.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -77,7 +77,7 @@ func sendVideoMsg(msg *wsClient.ClientMessage) {
 // 发送文件消息
 func sendFileMsg(msg *wsClient.ClientMessage) {
 	data := &proto.CmdWw367{}
-	if err := util.DecodeCmd(msg.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(msg.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -86,7 +86,7 @@ func sendFileMsg(msg *wsClient.ClientMessage) {
 // 发送链接消息
 func sendLinkMsg(msg *wsClient.ClientMessage) {
 	data := &proto.CmdWw368{}
-	if err := util.DecodeCmd(msg.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(msg.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -95,7 +95,7 @@ func sendLinkMsg(msg *wsClient.ClientMessage) {
 // 发送地理位置消息
 func sendLocationMsg(msg *wsClient.ClientMessage) {
 	data := &proto.CmdWw369{}
-	if err := util.DecodeCmd(msg.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(msg.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -104,7 +104,7 @@ func sendLocationMsg(msg *wsClient.ClientMessage) {
 // 发送小程序消息
 func sendLiteAppMsg(msg *wsClient.ClientMessage) {
 	data := &proto.CmdWw3610{}
-	if err := util.DecodeCmd(msg.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(msg.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return

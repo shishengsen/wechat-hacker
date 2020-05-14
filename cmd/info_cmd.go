@@ -5,8 +5,8 @@ import (
 	"github.com/e421083458/gin_scaffold/dao"
 	"github.com/e421083458/gin_scaffold/proto"
 	"github.com/e421083458/gin_scaffold/public"
-	"github.com/e421083458/gin_scaffold/util"
 	"github.com/e421083458/gin_scaffold/websocket/client"
+	proto2 "github.com/gogo/protobuf/proto"
 	"log"
 )
 
@@ -39,7 +39,7 @@ func getUserInfo(cmd *wsClient.ClientMessage) {
 	_, _ = redC.Do("set", cmd.ClientConnId, cmd.Wxid)
 	// 用户数据
 	data := &proto.CmdWw331{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	memberDao := &dao.WechatMember{}
@@ -89,7 +89,7 @@ func disconnect(cmd *wsClient.ClientMessage) {
 // 修改头像
 func avatarModify(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw332{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -98,7 +98,7 @@ func avatarModify(cmd *wsClient.ClientMessage) {
 // 获取当前用户登录账号二维码
 func getQrCode(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw333{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -107,7 +107,7 @@ func getQrCode(cmd *wsClient.ClientMessage) {
 // 获取所有部门信息
 func getDepartments(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw348{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -116,7 +116,7 @@ func getDepartments(cmd *wsClient.ClientMessage) {
 // 获取指定部门信息
 func getDepartment(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw349{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -125,7 +125,7 @@ func getDepartment(cmd *wsClient.ClientMessage) {
 // 获取所有外部客户
 func getAllCustomer(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw3411{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -134,7 +134,7 @@ func getAllCustomer(cmd *wsClient.ClientMessage) {
 // 获取所有会话列表
 func getAllChat(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw352{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -143,7 +143,7 @@ func getAllChat(cmd *wsClient.ClientMessage) {
 // 获取所有群会话列表
 func getAllGroup(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw353{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -152,7 +152,7 @@ func getAllGroup(cmd *wsClient.ClientMessage) {
 // 获取所有保存到通讯录的群会话列表
 func getAllSavedGroup(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw354{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return

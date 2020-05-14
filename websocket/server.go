@@ -10,6 +10,7 @@ import (
 	"github.com/e421083458/gin_scaffold/websocket/client"
 	"github.com/e421083458/golang_common/lib"
 	"github.com/garyburd/redigo/redis"
+	proto2 "github.com/gogo/protobuf/proto"
 	"github.com/gorilla/websocket"
 	uuId "github.com/satori/go.uuId"
 	"log"
@@ -124,7 +125,7 @@ closed:
 // 存储注册客户端数据至redis
 func runCmd(c *Client, msg *Message) {
 	cmdObj := &proto.Cmd{}
-	if err := util.DecodeCmd(msg.Data, cmdObj); err != nil {
+	if err := proto2.Unmarshal(msg.Data, cmdObj); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	execCmd := &wsClient.ClientMessage{

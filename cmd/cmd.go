@@ -3,10 +3,10 @@ package cmd
 import (
 	"fmt"
 	"github.com/e421083458/gin_scaffold/public"
-	"github.com/e421083458/gin_scaffold/util"
 	wsClient "github.com/e421083458/gin_scaffold/websocket/client"
 	"github.com/e421083458/golang_common/log"
 	"github.com/garyburd/redigo/redis"
+	"github.com/gogo/protobuf/proto"
 	"github.com/pkg/errors"
 	"reflect"
 )
@@ -39,7 +39,7 @@ func CallCmd(msgData *wsClient.ClientMessage) error {
 	}
 	fv := reflect.ValueOf(cmd)
 	args := []reflect.Value{reflect.ValueOf(msgData)}
-	binaryData, err := util.EncodeCmd(msgData.Cmd);
+	binaryData, err := proto.Marshal(msgData.Cmd)
 	if err != nil {
 		return nil
 	}

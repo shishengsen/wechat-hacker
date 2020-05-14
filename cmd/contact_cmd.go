@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/e421083458/gin_scaffold/proto"
-	"github.com/e421083458/gin_scaffold/util"
 	"github.com/e421083458/gin_scaffold/websocket/client"
+	proto2 "github.com/gogo/protobuf/proto"
 	"log"
 )
 
@@ -17,7 +17,7 @@ var ContactCmd = Commands{
 // 修改内部联系人备注
 func insideContactRemark(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw342{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -26,7 +26,7 @@ func insideContactRemark(cmd *wsClient.ClientMessage) {
 // 修改外部联系人备注
 func outsideContactRemark(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw341{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -35,7 +35,7 @@ func outsideContactRemark(cmd *wsClient.ClientMessage) {
 // 根据手机号搜索联系人
 func searchContactByPhone(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw343{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -44,7 +44,7 @@ func searchContactByPhone(cmd *wsClient.ClientMessage) {
 // 添加联系人
 func addContact(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw344{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -53,7 +53,7 @@ func addContact(cmd *wsClient.ClientMessage) {
 // 删除外部联系人
 func deleteContactOutside(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw347{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return

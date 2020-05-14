@@ -2,8 +2,8 @@ package cmd
 
 import (
 	"github.com/e421083458/gin_scaffold/proto"
-	"github.com/e421083458/gin_scaffold/util"
 	"github.com/e421083458/gin_scaffold/websocket/client"
+	proto2 "github.com/gogo/protobuf/proto"
 	"log"
 )
 
@@ -30,7 +30,7 @@ var GroupCmd = Commands{
 // 创建群聊
 func createGroup(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw355{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -39,7 +39,7 @@ func createGroup(cmd *wsClient.ClientMessage) {
 // 退出群聊
 func quitGroup(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw356{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -48,7 +48,7 @@ func quitGroup(cmd *wsClient.ClientMessage) {
 // 解散群聊
 func dismissGroup(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw357{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -57,7 +57,7 @@ func dismissGroup(cmd *wsClient.ClientMessage) {
 // 修改群名称
 func renameGroup(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw358{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -66,7 +66,7 @@ func renameGroup(cmd *wsClient.ClientMessage) {
 // 修改当前账号群名片
 func renameGroupRemark(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw359{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -75,7 +75,7 @@ func renameGroupRemark(cmd *wsClient.ClientMessage) {
 // 获取群内成员信息
 func groupMemberList(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw3510{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -84,7 +84,7 @@ func groupMemberList(cmd *wsClient.ClientMessage) {
 // 邀请他人入群
 func inviteJoinGroup(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw3511{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -93,7 +93,7 @@ func inviteJoinGroup(cmd *wsClient.ClientMessage) {
 // 添加他人入群
 func addJoinGroup(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw3512{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -102,7 +102,7 @@ func addJoinGroup(cmd *wsClient.ClientMessage) {
 // 设置群主
 func setGroupOwner(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw3515{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -111,7 +111,7 @@ func setGroupOwner(cmd *wsClient.ClientMessage) {
 // 设置群公告
 func setGroupNotice(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw3516{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -120,7 +120,7 @@ func setGroupNotice(cmd *wsClient.ClientMessage) {
 // 将群保存或移出通讯录
 func groupContactChange(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw3517{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -129,7 +129,7 @@ func groupContactChange(cmd *wsClient.ClientMessage) {
 // 设置/取消置顶
 func setTopGroup(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw3518{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -138,7 +138,7 @@ func setTopGroup(cmd *wsClient.ClientMessage) {
 // 设置/取消免打扰
 func setGroupDisturb(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw3519{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -147,7 +147,7 @@ func setGroupDisturb(cmd *wsClient.ClientMessage) {
 // 设置/取消禁言
 func setGroupForbidden(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw3520{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -156,7 +156,7 @@ func setGroupForbidden(cmd *wsClient.ClientMessage) {
 // 设置/取消入群确认
 func setGroupConfirm(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw3521{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -165,7 +165,7 @@ func setGroupConfirm(cmd *wsClient.ClientMessage) {
 // 隐藏会话
 func setHideConversation(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw3522{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
@@ -174,7 +174,7 @@ func setHideConversation(cmd *wsClient.ClientMessage) {
 // 标记会话为已读
 func setHasReadConversation(cmd *wsClient.ClientMessage) {
 	data := &proto.CmdWw3523{}
-	if err := util.DecodeCmd(cmd.Cmd.Data, data); err != nil {
+	if err := proto2.Unmarshal(cmd.Cmd.Data, data); err != nil {
 		log.Printf(" [redis] decode cmd failed: %v", err)
 	}
 	return
