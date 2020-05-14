@@ -16,6 +16,7 @@
 
 [websocket]
     addr = ":7777"
+    isNeedVerifyToken = false
 [log]
     log_level = "trace"         #日志打印最低级别
     [log.file_writer]           #文件写入配置
